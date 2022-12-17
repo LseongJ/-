@@ -9,4 +9,5 @@ public class HumanPlayer extends CardPlayer {
         ("Do you want another card (Y or N)?"); 
         return response.equals("Y");
     }
+
 }
