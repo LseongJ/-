@@ -6,14 +6,7 @@ public class ComputerPlayer extends CardPlayer {
         int sum = 0;
         for(int i=0; i<card_count; i++)
             sum += my_hand[i].getCount();
+            System.out.println(sum);
         return sum < 15;
-    }
-
-    public int calc(){
-        int sum_other = 0;
-        for(int j = 0; j < card_count; j++){
-            sum_other += my_hand[j].getCount();
-        }
-        return sum_other;
     }
 }

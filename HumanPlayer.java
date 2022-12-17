@@ -9,12 +9,4 @@ public class HumanPlayer extends CardPlayer {
         ("Do you want another card (Y or N)?"); 
         return response.equals("Y");
     }
-
-    public int calc(){
-        int sum_player = 0;
-        for(int j = 0; j < card_count; j++){
-            sum_player += my_hand[j].getCount();
-        }
-        return sum_player;
-    }
 }
