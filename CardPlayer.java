@@ -1,4 +1,3 @@
-import javax.swing.*;
 public abstract class CardPlayer implements CardPlayerBehaviour {
     protected Card[] my_hand; 
     protected int card_count;
@@ -22,9 +21,5 @@ public abstract class CardPlayer implements CardPlayerBehaviour {
         card_count = card_count + 1;
     }
 
-    public String setBet(){
-        String betting = JOptionPane.showInputDialog
-        ("베팅 금액을 입력하십시오");
-        return betting;
-    }
+    public abstract String setBet();
 }

@@ -2,109 +2,210 @@ import javax.swing.*;
 
 class Main {
     public static void main(String[] args) {
-        int money = 1000;
+        int money_A = 1000;
+        int money_B = 1000;
         while (true) {
             boolean flag = true;
             CardDeck carddeck = new CardDeck();   // 52장 생성
-            CardPlayer cp = new ComputerPlayer(10);
-            CardPlayer hm = new HumanPlayer(10);
-
-            System.out.println("현재 보유 금액: " + money);
-            int betting_money = Integer.valueOf(hm.setBet());
+            CardPlayer A = new Player_A(10);
+            CardPlayer B = new Player_B(10);
+            //-------------------------------------------------------------------------//
+            System.out.println("A의 현재 보유 금액: " + money_A);    // A 
+            int betting_money_A = Integer.valueOf(A.setBet());
             while (true){  
-                // betting_money < 0인 경우를 예외처리 해야함(money가 오히려 더 늘어남) 
-                money = money - betting_money;     
-                if (money < 0){
-                    System.out.println("현재 보유 금액보다 높은 금액은 베팅할 수 없습니다.");
-                    money += betting_money;  //복구
-                    betting_money = Integer.valueOf(hm.setBet());
+                // betting_money_A < 0인 경우를 예외처리 해야함(money가 오히려 더 늘어남) 
+                money_A = money_A - betting_money_A;     
+                if (money_A < 0){
+                    System.out.println("A : 현재 보유 금액보다 높은 금액은 베팅할 수 없습니다.");
+                    money_A += betting_money_A;  //복구
+                    betting_money_A = Integer.valueOf(A.setBet());
                 }
                 else{
-                    System.out.println("현재 잔금:" + money);
+                    System.out.println("A의 현재 잔금:" + money_A);
                     break;
                 }    
             }
-          
+            //-------------------------------------------------------------------------//
+            System.out.println("B의 현재 보유 금액: " + money_B);    // B 
+            int betting_money_B = Integer.valueOf(B.setBet());
+            while (true){  
+                // betting_money_B < 0인 경우를 예외처리 해야함(money가 오히려 더 늘어남) 
+                money_B = money_B - betting_money_B;     
+                if (money_B < 0){
+                    System.out.println("B : 현재 보유 금액보다 높은 금액은 베팅할 수 없습니다.");
+                    money_B += betting_money_B;  //복구
+                    betting_money_B = Integer.valueOf(B.setBet());
+                }
+                else{
+                    System.out.println("B의 현재 잔금:" + money_B);
+                    break;
+                }    
+            }
+            //-------------------------------------------------------------------------//
             //처음에 2장씩 가진다.
-            hm.receiveCard(carddeck.newCard());
-            hm.receiveCard(carddeck.newCard());
+            A.receiveCard(carddeck.newCard());
+            A.receiveCard(carddeck.newCard());
 
-            cp.receiveCard(carddeck.newCard());
-            cp.receiveCard(carddeck.newCard());
+            B.receiveCard(carddeck.newCard());
+            B.receiveCard(carddeck.newCard());
 
-            System.out.println("플레이어의 처음 카드합은 " + hm.get_sum() + " 입니다");
-            System.out.println("딜러의 처음 카드합은 " + cp.get_sum() + " 입니다");
-            
-            if (hm.get_sum() > 21) {
-                System.out.println("플레이어의 패배");
-                flag = false;
+            System.out.println("A의 처음 카드합은 " + A.get_sum() + " 입니다");
+            System.out.println("B의 처음 카드합은 " + B.get_sum() + " 입니다");
+            //------------------------------------------------------------------------//
+            //test 승부가 처음에 날려면 둘 중하나는 버스트거나 블랙잭이면 끝남
+            if (A.get_sum() > 21){    // A가 버스트인 경우
+                if (B.get_sum() > 21){       // A, B 둘 다 버스트
+                    if (A.get_sum() > B.get_sum()){
+                        System.out.println("B의 승리1");
+                        money_B += (betting_money_B * 2);
+                        flag = false;
+                    }
+                    else if (A.get_sum() == B.get_sum()){
+                        System.out.println("무승부(Bust)");
+                        money_A += betting_money_A;
+                        money_B += betting_money_B;
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("A의 승리1");
+                        money_A += (betting_money_A * 2);
+                        flag = false;
+                    }
+                }
+                else if (B.get_sum() < 21){     // A만 버스트
+                    if (B.get_sum() == 21){
+                        System.out.println("B의 승리2(blackjack");  
+                        money_B += (betting_money_B * 3);
+                        flag = false;
+                    }
+                    else if(B.get_sum() < 21){
+                        System.out.println("B의 승리3");  
+                        money_B += (betting_money_B * 2);
+                        flag = false;
+                    }
+                }
             }
-            else if (hm.get_sum() == 21) {
-                money = money + (betting_money * 3);
-                System.out.println("플레이어의 승리(Blackjack!!!)");
-                flag = false;
+            if (A.get_sum() == 21){
+                if (B.get_sum() != 21){
+                    System.out.println("A의 승리4(blackjack)");
+                    money_A += (betting_money_A * 3);
+                    flag = false;
+                }
+                else{
+                    System.out.println("무승부(blackjack)");
+                    money_A += betting_money_A;
+                    money_B += betting_money_B;
+                    flag = false;
+                }
             }
-            else if (cp.get_sum() > 21) {
-                System.out.println("플레이어의 승리");
-                money = money + (betting_money * 2);
-                flag = false;
+            //---//
+            if (B.get_sum() > 21){    // B가 버스트인 경우
+                if (A.get_sum() > 21){       // A, B 둘 다 버스트
+                    if (A.get_sum() > B.get_sum()){
+                        System.out.println("B의 승리1");
+                        money_B += (betting_money_B * 2);
+                        flag = false;
+                    }
+                    else if (A.get_sum() == B.get_sum()){
+                        System.out.println("무승부(Bust)");
+                        money_A += betting_money_A;
+                        money_B += betting_money_B;
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("A의 승리1");
+                        money_A += (betting_money_A * 2);
+                        flag = false;
+                    }
+                }
+                else if (A.get_sum() < 21){     // B만 버스트
+                    if (A.get_sum() == 21){
+                        System.out.println("A의 승리2(blackjack");  
+                        money_B += (betting_money_B * 3);
+                        flag = false;
+                    }
+                    else if(A.get_sum() < 21){
+                        System.out.println("A의 승리3");  
+                        money_B += (betting_money_B * 2);
+                        flag = false;
+                    }
+                }
             }
-
-            boolean cp_stay = false;
-            boolean hm_stay = false;
+            if (B.get_sum() == 21){
+                if (B.get_sum() != 21){
+                    System.out.println("A의 승리4(blackjack)");
+                    money_A += (betting_money_A * 3);
+                    flag = false;
+                }
+                else{
+                    System.out.println("무승부(blackjack)");
+                    money_A += betting_money_A;
+                    money_B += betting_money_B;
+                    flag = false;
+                }
+            }
+            //------------------------------------------------------------------------//
+            boolean B_stay = false;
+            boolean A_stay = false;
             while (flag) {
-                if (hm_stay == false && (hm.wantsACard() == true)){
-                    hm.receiveCard(carddeck.newCard());     // hit
-                    System.out.println("플레이어의 카드합: " + hm.get_sum());
-                    if (hm.get_sum() > 21) {
-                        System.out.println("플레이어의 패배");
+                if (A_stay == false && (A.wantsACard() == true)){
+                    A.receiveCard(carddeck.newCard());     // hit
+                    System.out.println("A의 카드합: " + A.get_sum());
+                    if (A.get_sum() > 21) {
+                        System.out.println("B의 승리");
+                        money_B += (betting_money_B * 2);
                         flag = false;
                         break;
                     }
-                    else if (hm.get_sum() == 21) {
-                        System.out.println("플레이어의 승리(Blackjack!!!)");
-                        money = money + (betting_money * 3);
-                        flag = false;
-                        break;
-                    }
-                }
-                else{
-                    hm_stay = true;
-                }
-                if (cp_stay == false && (cp.wantsACard() == true)){
-                    cp.receiveCard(carddeck.newCard());     // hit
-                    System.out.println("딜러의 카드합은: " + cp.get_sum());
-                    if (cp.get_sum() > 21) {
-                        System.out.println("플레이어의 승리");
-                        money = money + (betting_money * 2);
+                    else if (A.get_sum() == 21) {
+                        System.out.println("A의 승리(Blackjack!!!)");
+                        money_A = money_A + (betting_money_A * 3);
                         flag = false;
                         break;
                     }
                 }
                 else{
-                    cp_stay = true;
+                    System.out.println("A의 카드합: " + A.get_sum());
+                    A_stay = true;
                 }
-                if (cp_stay && hm_stay) {
+                if (B_stay == false && (B.wantsACard() == true)){
+                    B.receiveCard(carddeck.newCard());     // hit
+                    System.out.println("B의 카드합은: " + B.get_sum());
+                    if (B.get_sum() > 21) {
+                        System.out.println("A의 승리");
+                        money_A = money_A + (betting_money_A * 2);
+                        flag = false;
+                        break;
+                    }
+                }
+                else{
+                    System.out.println("B의 카드합은: " + B.get_sum());
+                    B_stay = true;
+                }
+                if (B_stay && A_stay) {
                     break;
                 }
             }
             if (flag) {
-                if (hm.get_sum() > cp.get_sum()) {
-                    System.out.println("플레이어의 승리");
-                    money = money + (betting_money * 2);
+                if (A.get_sum() > B.get_sum()) {
+                    System.out.println("A의 승리");
+                    money_A = money_A + (betting_money_A * 2);
                 }
-                else if (cp.get_sum() > hm.get_sum()) {
-                    System.out.println("플레이어의 패배");
+                else if (B.get_sum() > A.get_sum()) {
+                    System.out.println("B의 승리");
+                    money_B = money_B + (betting_money_B * 2);
                 }
                 else {
                     System.out.println("무승부");
-                    money += betting_money; // 원금회복
+                    money_A += betting_money_A; // 원금회복
+                    money_B += betting_money_B;
                 }
             }
            
-            System.out.println("현재 보유 금액: " + money);
+            System.out.println("A의 현재 보유 금액: " + money_A);
+            System.out.println("B의 현재 보유 금액: " + money_B);
             String response = JOptionPane.showInputDialog
-                ("Do you want play more? (Y or N)?"); 
+                ("A, B : Do you want play more? (Y or N)?"); 
                 if (response.equals("Y") == true){
                     System.out.println("---------------------------");
                 }
