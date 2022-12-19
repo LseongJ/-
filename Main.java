@@ -1,9 +1,16 @@
 import javax.swing.*;
+import java.io.*;
+import java.util.*;
 
 class Main {
     public static void main(String[] args) {
         int money_A = 1000;
         int money_B = 1000;
+        
+
+
+
+
         while (true) {
             boolean flag = true;
             CardDeck carddeck = new CardDeck();   // 52장 생성
